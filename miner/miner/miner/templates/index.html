@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>⛏️ Keeper Miner</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>
+  <div class="logo">⛏️ <b>Keeper Miner</b> <span class="badge" id="cpu-badge">{{ default_cpu }}٪ CPU</span></div>
+</header>
+
+<main>
+
+<!-- ═══ ولت ═══ -->
+<section class="card hero">
+  <h1>ولت خودت</h1>
+  <p>هر چی ماین شد، مستقیم می‌ره به این آدرس. همه چیز مال خودت.</p>
+  <div class="wallet-row">
+    <select id="coin-select">
+      {% for c in coins %}
+        <option value="{{ c.code }}" {% if c.code == default_coin %}selected{% endif %}>
+          {{ c.icon }} {{ c.name }} ({{ c.symbol }})
+        </option>
+      {% endfor %}
+    </select>
+    <input id="wallet-input" dir="ltr" placeholder="آدرس ولت…" value="{{ wallets.get(default_coin, '') }}">
+    <button id="btn-save-wallet" class="btn-primary">💾 ذخیره</button>
+  </div>
+  <p id="wallet-msg" class="msg"></p>
+</section>
+
+<!-- ═══ استخر و CPU ═══ -->
+<section class="card">
+  <h2>⚙️ تنظیمات</h2>
+  <label>استخر</label>
+  <select id="pool-select"></select>
+
+  <label>مصرف CPU: <b id="cpu-val">{{ default_cpu }}٪</b></label>
+  <input type="range" id="cpu-slider" min="5" max="90" value="{{ default_cpu }}" step="5">
+  <p class="small">پیش‌فرض ۳۰٪ — سیستم سالم می‌مونه، گرمای اضافی نمی‌گیری.</p>
+
+  <p id="coin-note" class="hint" style="display:none"></p>
+
+  <div class="row">
+    <button id="btn-start" class="btn-primary">▶️ شروع ماین</button>
+    <button id="btn-stop" class="btn-danger">⏹ توقف</button>
+  </div>
+  <p id="msg" class="msg"></p>
+</section>
+
+<!-- ═══ وضعیت ═══ -->
+<section class="card">
+  <h2>📊 وضعیت</h2>
+  <div class="stats">
+    <div class="stat"><label>حالت</label><b id="s-running">—</b></div>
+    <div class="stat"><label>هش‌ریت</label><b id="s-hashrate">0</b></div>
+    <div class="stat"><label>سهم موفق</label><b id="s-good">0</b></div>
+    <div class="stat"><label>Uptime</label><b id="s-uptime">—</b></div>
+    <div class="stat"><label>CPU</label><b id="s-cpu">0%</b></div>
+    <div class="stat"><label>RAM</label><b id="s-mem">0%</b></div>
+  </div>
+  <div class="meter"><div class="meter-fill" id="cpu-meter"></div></div>
+</section>
+
+</main>
+
+<script>
+  window.__COINS__ = {{ coins|tojson }};
+  window.__WALLETS__ = {{ wallets|tojson }};
+  window.__DEFAULT_COIN__ = "{{ default_coin }}";
+  window.__DEFAULT_CPU__ = {{ default_cpu }};
+</script>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
